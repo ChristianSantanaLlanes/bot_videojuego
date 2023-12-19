@@ -1,0 +1,13 @@
+corre este comando en tu terminal con la carpeta del proyecto abierta 
+
+pip install -r requirements.txt
+
+despues rellena los campos de 
+api_id = 1234
+api_hash = ""
+bot_token = ""
+usa tus datos que obtienes de https://my.telegram.org/apps
+
+y despues usa este comando
+
+python main.py
