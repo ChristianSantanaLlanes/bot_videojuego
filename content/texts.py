@@ -13,5 +13,7 @@ También puedes utilizar los siguientes comandos:
 Nombre: {first_name} {last_name}
 Username: {username}
 Id: {id}
+
+Version del Bot: {version}
 '''
 }
