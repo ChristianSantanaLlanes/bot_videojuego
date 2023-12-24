@@ -15,3 +15,12 @@ Username: {username}
 Id: {id}
 '''
 }
+
+error_text_game_not_found = '''
+❌ El bot ha rechazado su solicitud:
+
+▫ Asegúrese de cumplir los siguientes requisitos:
+
+1. El nombre del videojuego está escrito correctamente.
+2. ⁠El juego existe actualmente.
+'''

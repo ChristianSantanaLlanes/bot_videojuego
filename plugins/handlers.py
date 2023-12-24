@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-from content.texts import TEXTS
+from content.texts import TEXTS, error_text_game_not_found
 from models.User import User
 
 from helpers.service import get_game_by_name, get_new_user_telegram_or_create
@@ -31,10 +31,14 @@ async def info(client, message):
 async def get_text(client, message):
     text = message.text
     resp = get_game_by_name(text)
-    name = resp['data'][0]['attributes']['name']
-    description = resp['data'][0]['attributes']['description']
-    text = f'''
+    if resp:
+        name = resp.attributes.name
+        description = resp.attributes.description
+        photo = resp.attributes.cover.data.attributes.url
+        text = f'''
 Nombre: {name}
 Descripcion: {description}
-'''
-    await message.reply(text)
+    '''
+        await message.reply_photo(photo, caption=text)
+    else:
+        await message.reply(error_text_game_not_found)
