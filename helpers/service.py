@@ -1,5 +1,5 @@
 import json
-from helpers.get_user_data import User
+from models.User import User
 import requests
 token = 'd0434777c591f1cb7894a3202ca3dd01ada108c543e18b991809fb324553e5b2d072d1bd4bcd3558b88e7da4cb188643eb41a2d3c344e70f0c32ed2c44e7ceb32ba8b25ffb88abfe6c3af6e1fe53f258ec8b8e5c76d3da8dc53d7c96188a22d3bee28f30dcc4e9a6b9d61c0521db72308d7d613abf298f6941dc348e4c250975'
 URL_BACKEND = 'https://strapi-production-2d60.up.railway.app/api'

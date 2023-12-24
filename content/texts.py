@@ -6,8 +6,12 @@ Para empezar, envíame el nombre del juego que quieres buscar. Por ejemplo, si q
 
 También puedes utilizar los siguientes comandos:
 
-/top: Para ver una lista de los juegos más populares.
-/new: Para ver una lista de los juegos más recientes.
 /help: Para obtener ayuda sobre el bot.
+/info: Para obtener tu informacion
+''',
+    'info_text': '''
+Nombre: {first_name} {last_name}
+Username: {username}
+Id: {id}
 '''
 }
