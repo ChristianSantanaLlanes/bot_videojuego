@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, Any, TypeVar, Type, cast
+from typing import Optional, Any, List, TypeVar, Type, cast, Callable
 from datetime import datetime
 import dateutil.parser
 
@@ -26,18 +26,12 @@ def from_union(fs, x):
     assert False
 
 
-def from_float(x: Any) -> float:
-    assert isinstance(x, (float, int)) and not isinstance(x, bool)
-    return float(x)
+def from_datetime(x: Any) -> datetime:
+    return dateutil.parser.parse(x)
 
 
 def from_int(x: Any) -> int:
     assert isinstance(x, int) and not isinstance(x, bool)
-    return x
-
-
-def to_float(x: Any) -> float:
-    assert isinstance(x, float)
     return x
 
 
@@ -46,8 +40,86 @@ def to_class(c: Type[T], x: Any) -> dict:
     return cast(Any, x).to_dict()
 
 
-def from_datetime(x: Any) -> datetime:
-    return dateutil.parser.parse(x)
+def from_list(f: Callable[[Any], T], x: Any) -> List[T]:
+    assert isinstance(x, list)
+    return [f(y) for y in x]
+
+
+def from_float(x: Any) -> float:
+    assert isinstance(x, (float, int)) and not isinstance(x, bool)
+    return float(x)
+
+
+def to_float(x: Any) -> float:
+    assert isinstance(x, float)
+    return x
+
+
+@dataclass
+class DatumAttributes:
+    name: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    published_at: Optional[datetime] = None
+
+    @staticmethod
+    def from_dict(obj: Any) -> 'DatumAttributes':
+        assert isinstance(obj, dict)
+        name = from_union([from_str, from_none], obj.get("name"))
+        created_at = from_union([from_datetime, from_none], obj.get("createdAt"))
+        updated_at = from_union([from_datetime, from_none], obj.get("updatedAt"))
+        published_at = from_union([from_datetime, from_none], obj.get("publishedAt"))
+        return DatumAttributes(name, created_at, updated_at, published_at)
+
+    def to_dict(self) -> dict:
+        result: dict = {}
+        if self.name is not None:
+            result["name"] = from_union([from_str, from_none], self.name)
+        if self.created_at is not None:
+            result["createdAt"] = from_union([lambda x: x.isoformat(), from_none], self.created_at)
+        if self.updated_at is not None:
+            result["updatedAt"] = from_union([lambda x: x.isoformat(), from_none], self.updated_at)
+        if self.published_at is not None:
+            result["publishedAt"] = from_union([lambda x: x.isoformat(), from_none], self.published_at)
+        return result
+
+
+@dataclass
+class Datum:
+    id: Optional[int] = None
+    attributes: Optional[DatumAttributes] = None
+
+    @staticmethod
+    def from_dict(obj: Any) -> 'Datum':
+        assert isinstance(obj, dict)
+        id = from_union([from_int, from_none], obj.get("id"))
+        attributes = from_union([DatumAttributes.from_dict, from_none], obj.get("attributes"))
+        return Datum(id, attributes)
+
+    def to_dict(self) -> dict:
+        result: dict = {}
+        if self.id is not None:
+            result["id"] = from_union([from_int, from_none], self.id)
+        if self.attributes is not None:
+            result["attributes"] = from_union([lambda x: to_class(DatumAttributes, x), from_none], self.attributes)
+        return result
+
+
+@dataclass
+class Caracterisiticas:
+    data: Optional[List[Datum]] = None
+
+    @staticmethod
+    def from_dict(obj: Any) -> 'Caracterisiticas':
+        assert isinstance(obj, dict)
+        data = from_union([lambda x: from_list(Datum.from_dict, x), from_none], obj.get("data"))
+        return Caracterisiticas(data)
+
+    def to_dict(self) -> dict:
+        result: dict = {}
+        if self.data is not None:
+            result["data"] = from_union([lambda x: from_list(lambda x: to_class(Datum, x), x), from_none], self.data)
+        return result
 
 
 @dataclass
@@ -266,6 +338,10 @@ class GameAttributes:
     req_min: Optional[str] = None
     rec_rec: Optional[str] = None
     trailer_url: Optional[str] = None
+    generos: Optional[Caracterisiticas] = None
+    caracterisiticas: Optional[Caracterisiticas] = None
+    vistas: Optional[Caracterisiticas] = None
+    companias: Optional[Caracterisiticas] = None
     cover: Optional[Cover] = None
 
     @staticmethod
@@ -279,8 +355,12 @@ class GameAttributes:
         req_min = from_union([from_str, from_none], obj.get("req_min"))
         rec_rec = from_union([from_str, from_none], obj.get("rec_rec"))
         trailer_url = from_union([from_str, from_none], obj.get("trailer_url"))
+        generos = from_union([Caracterisiticas.from_dict, from_none], obj.get("generos"))
+        caracterisiticas = from_union([Caracterisiticas.from_dict, from_none], obj.get("caracterisiticas"))
+        vistas = from_union([Caracterisiticas.from_dict, from_none], obj.get("vistas"))
+        companias = from_union([Caracterisiticas.from_dict, from_none], obj.get("companias"))
         cover = from_union([Cover.from_dict, from_none], obj.get("cover"))
-        return GameAttributes(name, created_at, updated_at, published_at, description, req_min, rec_rec, trailer_url, cover)
+        return GameAttributes(name, created_at, updated_at, published_at, description, req_min, rec_rec, trailer_url, generos, caracterisiticas, vistas, companias, cover)
 
     def to_dict(self) -> dict:
         result: dict = {}
@@ -300,6 +380,14 @@ class GameAttributes:
             result["rec_rec"] = from_union([from_str, from_none], self.rec_rec)
         if self.trailer_url is not None:
             result["trailer_url"] = from_union([from_str, from_none], self.trailer_url)
+        if self.generos is not None:
+            result["generos"] = from_union([lambda x: to_class(Caracterisiticas, x), from_none], self.generos)
+        if self.caracterisiticas is not None:
+            result["caracterisiticas"] = from_union([lambda x: to_class(Caracterisiticas, x), from_none], self.caracterisiticas)
+        if self.vistas is not None:
+            result["vistas"] = from_union([lambda x: to_class(Caracterisiticas, x), from_none], self.vistas)
+        if self.companias is not None:
+            result["companias"] = from_union([lambda x: to_class(Caracterisiticas, x), from_none], self.companias)
         if self.cover is not None:
             result["cover"] = from_union([lambda x: to_class(Cover, x), from_none], self.cover)
         return result
