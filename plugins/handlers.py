@@ -2,7 +2,7 @@ from pyrogram import Client, filters
 from content.texts import TEXTS
 from models.User import User
 
-from helpers.service import get_new_user_telegram_or_create
+from helpers.service import get_game_by_name, get_new_user_telegram_or_create
 
 @Client.on_message(filters.command('start') & filters.private)
 async def start(client, message):
@@ -11,16 +11,11 @@ async def start(client, message):
     nombre = user.first_name
     await message.reply(TEXTS['start_text'].format(nombre))
 
-@Client.on_message(filters.command('data'))
-async def data(client, message):
-    user_id = message.from_user
-    print(str(user_id))
-
-@Client.on_message(filters.command('help'))
+@Client.on_message(filters.command('help') & filters.private)
 async def help(client, message):
     await message.reply('Esta es la ayuda')
 
-@Client.on_message(filters.command('info'))
+@Client.on_message(filters.command('info') & filters.private)
 async def info(client, message):
     user = User(message.from_user)
     username = user.username if user.username != '' else 'No Username'
@@ -30,4 +25,16 @@ async def info(client, message):
         username=username,
         id=user.id 
     )
+    await message.reply(text)
+
+@Client.on_message(filters.text & filters.private)
+async def get_text(client, message):
+    text = message.text
+    resp = get_game_by_name(text)
+    name = resp['data'][0]['attributes']['name']
+    description = resp['data'][0]['attributes']['description']
+    text = f'''
+Nombre: {name}
+Descripcion: {description}
+'''
     await message.reply(text)

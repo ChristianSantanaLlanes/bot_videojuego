@@ -35,3 +35,11 @@ def get_new_user_telegram_or_create(data):
         return user
     else:
         return user
+    
+def get_game_by_name(name):
+    params = f'sort[0]=name:asc&filters[name][$containsi]={name}'
+    url = f"{URL_BACKEND}/games?{params}"
+    response = requests.get(url)
+    data = response.content
+    data_json = json.loads(data)
+    return data_json
