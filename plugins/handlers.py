@@ -5,10 +5,12 @@ from content.texts import (
     info_text,
     game_text
 )
+from helpers.state import get_state, set_state
 from models.Game import game_from_dict
 from models.User import User
 
 from helpers.service import get_game_by_name, get_new_user_telegram_or_create
+from plugins.buttons import get_back_button, get_game_buttons
 
 @Client.on_message(filters.command('start') & filters.private)
 async def start(client, message):
@@ -35,6 +37,7 @@ async def info(client, message):
 
 @Client.on_message(filters.text & filters.private)
 async def get_text(client, message):
+    user = User(message.from_user)
     text = message.text
     resp = get_game_by_name(text)
     if resp:
@@ -43,10 +46,27 @@ async def get_text(client, message):
         name = result.attributes.name
         description = result.attributes.description
         photo = result.attributes.cover.data.attributes.url 
-        text = game_text.format(
+        trailer_url = result.attributes.trailer_url
+        text_cap = game_text.format(
             name=name,
             description=description,
-)
-        await message.reply_photo(photo, caption=text)
+        )
+        set_state(user.id, result.attributes.req_min, result.attributes.rec_rec, text_cap, trailer_url)
+        await message.reply_photo(photo, caption=text_cap, reply_markup=get_game_buttons(trailer_url))
     else:
         await message.reply(error_text_game_not_found)
+
+@Client.on_callback_query()
+async def query(client, callback_query):
+    user = User(callback_query.from_user)
+    state = get_state(user.id)
+    query = callback_query.data
+    if state:
+        if query == 'rec_min':
+            await callback_query.edit_message_caption(state.get('rec_min'),reply_markup=get_back_button())
+        elif query == 'rec_rec':
+            await callback_query.edit_message_caption(state.get('rec_rec'),reply_markup=get_back_button())
+        elif query == 'back':
+            await callback_query.edit_message_caption(state.get('result'),reply_markup=get_game_buttons(state.get('trailer_url')))
+    else:
+        await callback_query.edit_message_caption('El tiempo de espera termino por favor reinicie el bot con el comando /start')
