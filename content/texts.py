@@ -1,6 +1,6 @@
 TEXTS = {
     'start_text': '''
-¡Hola {}! Bienvenido al bot de videojuegos. Aquí podrás encontrar información sobre tus juegos favoritos, como la foto, el nombre, la descripción y mucho más.
+¡Hola {}! Bienvenido  al bot de videojuegos. Aquí podrás encontrar información sobre tus juegos favoritos, como la foto, el nombre, la descripción y mucho más.
 
 Para empezar, usa la opción "Buscar Videojuego" y envíame el nombre del juego que quieres buscar. Por ejemplo, si quieres buscar información sobre "Elden Ring", envíame "Elden Ring".
 
