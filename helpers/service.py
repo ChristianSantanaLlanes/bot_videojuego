@@ -22,7 +22,6 @@ def create_telegram_user(user):
         json=args,
         headers=headers
     )
-    print(resp.content)
 
 def get_new_user_telegram_or_create(data):
     user = User(data)
