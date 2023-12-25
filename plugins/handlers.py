@@ -2,12 +2,16 @@ from pyrogram import Client, filters
 from content.texts import (
     start_text,
     info_text,
-    help_text
+    help_text,
+    search_text,
+    text_with_cancel
 )
-from extra_functionality.extra_funcionality import create_first_state
+from pyrocon import patch
+from extra_functionality.extra_funcionality import create_first_state, get_games_list_and_respond
 from models.User import User
 from helpers.service import get_new_user_telegram_or_create
 from plugins.buttons import get_start_button
+from state.state import set_state
 
 
 @Client.on_message(filters.command('start') & filters.private)
@@ -32,3 +36,15 @@ async def info(client, message):
         id=user.id 
     )
     await message.reply(text)
+
+@Client.on_message(filters.command('search') & filters.private)
+async def search(client, message):
+    user = User(message.from_user)
+    set_state(user.id, buscando=True)
+    quiz = patch(client)
+    answer = await quiz.ask(message,search_text,filter=filters.text)
+    if answer.text:
+        await get_games_list_and_respond(client, answer)
+    if answer.cancel:
+        set_state(user.id, buscando=False)
+        await client.send_message(user.id, text_with_cancel)
