@@ -2,7 +2,9 @@ from pyrogram import Client, filters
 from content.texts import (
     start_text,
     info_text,
+    help_text
 )
+from extra_functionality.extra_funcionality import create_first_state
 from models.User import User
 from helpers.service import get_new_user_telegram_or_create
 from plugins.buttons import get_start_button
@@ -17,7 +19,7 @@ async def start(client, message):
 
 @Client.on_message(filters.command('help') & filters.private)
 async def help(client, message):
-    await message.reply('Esta es la ayuda')
+    await message.reply(help_text)
 
 @Client.on_message(filters.command('info') & filters.private)
 async def info(client, message):
