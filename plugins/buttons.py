@@ -1,4 +1,9 @@
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
+
+keyboard_buttons_text = {
+    'sarch_game': '🔎 Buscar Videojuego',
+    'help': '🆘 Ayuda'
+}
 
 def get_game_buttons(trailer_url):
     game_buttons = InlineKeyboardMarkup(
@@ -23,3 +28,18 @@ def get_back_button():
         ]
     )
     return back_button
+
+def get_start_button():
+    start_button = ReplyKeyboardMarkup(
+        [
+            [
+                KeyboardButton(keyboard_buttons_text['sarch_game'])
+            ],
+            [
+                KeyboardButton(keyboard_buttons_text['help'])
+            ]
+        ],
+        resize_keyboard=True,
+        is_persistent=True
+    )
+    return start_button

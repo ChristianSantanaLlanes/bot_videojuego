@@ -26,6 +26,15 @@ error_text_game_not_found = '''
 2. ⁠El juego existe actualmente.
 '''
 
+error_text_no_comand = '''
+❌ El bot ha rechazado su solicitud:
+
+▫ Asegúrese de cumplir los siguientes requisitos:
+
+1. Estas buscando en el boton {}
+2. Estas usando algun comando existente
+'''
+
 game_text = '''
 **Nombre**:👉👉 {name}
 **Descripcion**:👉 {description}
