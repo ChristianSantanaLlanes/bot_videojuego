@@ -8,7 +8,7 @@ También puedes utilizar los siguientes comandos:
 /help: Para obtener ayuda sobre el bot.
 /info: Para obtener tu informacion
 
-Puede buscar juegos tambien de manera inline en el bot solo debe usar el usuario del bot en el chat `@gamepadb_bot`
+Puede buscar juegos tambien de manera inline en el bot solo debe usar el usuario del bot en el chat `@gamepadb_bot` holaaa
 '''
 
 info_text = '''
@@ -18,7 +18,7 @@ Username: `{username}`
 Id: `{id}`
 
 Informacion del bot:
-Version del Bot: 0.1.0 beta
+Version del Bot: 1.0.0
 '''
 
 help_text = 'Esta es la ayuda'
