@@ -32,7 +32,14 @@ async def get_text(client, message):
     elif text == keyboard_buttons_text['help']:
         await message.reply(help_text)
     elif text == keyboard_buttons_text['info']:
-        await message.reply(info_text)
+        username = user.username if user.username != '' else 'No Username'
+        new_text = info_text.format(
+            first_name=user.first_name, 
+            last_name=user.last_name,
+            username=username,
+            id=user.id 
+        )
+        await message.reply(new_text)
     elif text.startswith('game'):
         id = text.split('~')[1]
         game = get_game_by_id(id)

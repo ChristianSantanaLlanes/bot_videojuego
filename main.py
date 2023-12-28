@@ -1,7 +1,7 @@
 from pyrogram import Client
-import uvloop
+# import uvloop
 plugins = dict(root="plugins")
-uvloop.install()
+# uvloop.install()
 app = Client("my_account", plugins=plugins)
 
 app.run()
